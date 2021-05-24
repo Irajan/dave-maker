@@ -1,0 +1,12 @@
+.container {
+	width: 80vw;
+	height: 100vh;
+	background-color: #000000;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+.btns {
+	width: 50%;
+	margin: 20px auto;
+}
