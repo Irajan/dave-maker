@@ -7,6 +7,9 @@ class GameController {
 		this.currentLevel = 0;
 		this.playGround;
 		this.player = null;
+		this.monster = null;
+		this.maxLevel = 3;
+
 		this.sprites = sprites;
 		this.controlKeys = null;
 		this.playerLife = 3;
@@ -19,6 +22,16 @@ class GameController {
 		this.controlKeys = controlKeys;
 
 		this.player = new Player(this.playGround);
+
+		if (this.playGround.monsterPosition != null) {
+			this.monster = new Monster(this.playGround);
+
+			this.monster.setEnemy(this.player);
+			this.player.setEnemy(this.monster);
+
+			this.monster.init();
+		}
+
 		window.addEventListener('keydown', this.keyboardInputHandler);
 	}
 
@@ -34,7 +47,7 @@ class GameController {
 				this.player.moveRight();
 				break;
 			case this.controlKeys.shoot:
-				this.player.fallDown();
+				this.player.shoot();
 				break;
 			default:
 				return;
@@ -49,6 +62,11 @@ class GameController {
 			window.removeEventListener('keydown', this.keyboardInputHandler);
 			cancelAnimationFrame(id);
 			this.ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+			if (this.currentLevel == this.maxLevel) {
+				this.gameOver();
+				return;
+			}
+
 			this.upgradeLevel();
 		}
 
@@ -92,11 +110,13 @@ class GameController {
 	upgradeLevel() {
 		this.currentLevel++;
 		console.log(this.score);
-		this.playGround.upgrade(this.currentLevel, () => {
+		this.playGround.upgrade(this.currentLevel, afterUpgrade.bind(this));
+
+		function afterUpgrade() {
 			this.player = new Player(this.playGround);
 			window.addEventListener('keydown', this.keyboardInputHandler);
 			this.start();
-		});
+		}
 	}
 
 	getScore() {
@@ -104,6 +124,7 @@ class GameController {
 	}
 
 	gameOver() {
+		alert('Game Over');
 		this.afterGameOver();
 	}
 }

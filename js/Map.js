@@ -1,6 +1,8 @@
 class Map {
 	constructor(elements) {
 		this.playerLocation = null;
+		this.monsterLocation = null;
+
 		this.staticObjects = new Array();
 		this.dynamicObjects = new Array();
 		this.index = 0;
@@ -14,7 +16,7 @@ class Map {
 				'Rg   g   g   g   gR',
 				'RR   R   R   R   RR',
 				'Rg     g          R',
-				'R   RRRR   RRRRR  R',
+				'R   RRRRm  RRRRR  R',
 				'R0         R=     R',
 				'RRRRRRRRRRRRRRRRRRR',
 			],
@@ -27,7 +29,7 @@ class Map {
 				'R  pp    R   tR  ppp',
 				'R        R p  R     ',
 				'R   ppp GR    R     ',
-				'R0       Rg  pR     ',
+				'R0    f  Rg  pR     ',
 				'RRRRfffffRffffR     ',
 			],
 		];
@@ -188,11 +190,15 @@ class Map {
 				});
 
 				this.playerLocation = {
-					id: this.staticObjects.length + this.dynamicObjects.length,
 					x: (col + 1) * GRID_WIDTH,
 					y: row * GRID_HEIGHT,
 				};
 				return ENTRY_PIPE;
+			case 'm':
+				this.monsterLocation = {
+					x: col * GRID_WIDTH,
+					y: row * GRID_HEIGHT,
+				};
 			default:
 				return;
 		}

@@ -3,6 +3,7 @@ class Player {
 		this.playground = playground;
 		this.x = playground.playerPosition.x;
 		this.y = playground.playerPosition.y;
+		this.enemy = null;
 
 		this.sprite = playground.sprites;
 		this.ctx = playground.ctx;
@@ -12,6 +13,7 @@ class Player {
 		this.onAir = false;
 		this.isMoving = false;
 		this.isJumping = false;
+		this.isFiring = false;
 
 		this.fallingId = null;
 
@@ -29,6 +31,12 @@ class Player {
 			SCREEN_HEIGHT
 		);
 		this.draw(this.ctx);
+	}
+
+	setEnemy(enemy) {
+		this.enemy = enemy;
+
+		console.log(enemy, 'is my enemy');
 	}
 
 	jump() {
@@ -377,11 +385,21 @@ class Player {
 	}
 
 	shoot() {
-		if (!this.hasGun) {
+		if (!this.hasGun && this.isFiring) {
 			return;
 		}
-		const bullet = new Bullet(this.x, this.y, this.leftOrRight);
-		bullet.fire();
+		this.isFiring = true;
+
+		const bullet = new Bullet(this);
+		bullet.fire(this.playground);
+		setTimeout(() => {
+			this.isFiring = false;
+		}, SPEED * 100);
+	}
+
+	die() {
+		this.isDead = true;
+		this.leftOrRight = 'die';
 	}
 
 	draw(ctx, spriteIndex = 0) {

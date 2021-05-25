@@ -123,6 +123,15 @@ class SpriteMap {
 					{ x: 64, y: 640 },
 				],
 			},
+			[MONSTER]: {
+				width: 70,
+				height: 64,
+				alive: [{ x: 142, y: 640 }],
+				die: [
+					{ x: -1, y: 640 },
+					{ x: 64, y: 640 },
+				],
+			},
 		};
 	}
 }

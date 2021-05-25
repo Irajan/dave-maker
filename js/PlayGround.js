@@ -1,9 +1,11 @@
 class PlayGround {
 	constructor(sprites, map) {
 		this.map = map || new Map();
-		this.map.index = 1;
+		this.map.index = 0;
 		this.sprites = sprites;
 		this.playerPosition = null;
+		this.monsterPosition = null;
+
 		this.ctx = null;
 
 		this.objects = [[], [], [], []];
@@ -14,6 +16,9 @@ class PlayGround {
 		this.ctx = ctx;
 		this.map.draw(ctx, this.sprites);
 		this.playerPosition = this.map.playerLocation;
+		if (this.map.monsterLocation != null) {
+			this.monsterPosition = this.map.monsterLocation;
+		}
 
 		const staticObjects = this.map.staticObjects;
 		const dynamicObjects = this.map.dynamicObjects;
@@ -102,7 +107,7 @@ class PlayGround {
 				this.show(this.ctx);
 				afterUpgrade();
 			}
-		}, SPEED / 2);
+		}, SPEED);
 	}
 
 	remove(object) {

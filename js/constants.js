@@ -33,3 +33,4 @@ const JETPACK = 'jetpack';
 const ENTRY_PIPE = 'pipe';
 const PLAYER = 'player';
 const FIRE = 'fire';
+const MONSTER = 'monster';
