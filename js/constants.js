@@ -11,7 +11,30 @@ const STEP_PER_FRAME = 1;
 const SPEED = 8;
 
 const CONTROLLER_KEYS = [
-	{ up: 'ArrowUp', left: 'ArrowLeft', right: 'ArrowRight', shoot: 'Space' },
+	{
+		up: 'ArrowUp',
+		left: 'ArrowLeft',
+		right: 'ArrowRight',
+		shoot: 'Space',
+		img: {
+			up: './assets/images/keyboard_key_up.png',
+			left: './assets/images/keyboard_key_left.png',
+			right: './assets/images/keyboard_key_right.png',
+			shoot: './assets/images/keyboard_key_space.png',
+		},
+	},
+	{
+		up: 'KeyW',
+		left: 'KeyA',
+		right: 'KeyD',
+		shoot: 'KeyX',
+		img: {
+			up: './assets/images',
+			left: './assets/images',
+			right: './assets/images/',
+			shoot: './assets/images/',
+		},
+	},
 ];
 
 const RED_BRICK = 'redBrick';

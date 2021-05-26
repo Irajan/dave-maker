@@ -26,15 +26,27 @@ class DaveGame {
 	}
 
 	getInformation() {
-		return 'The objective of the game is to collect gold cups to move on to the next level. Since the original 1988 publishing of Dangerous Dave on UpTime, there have been three sequels and three ports of the original to other platforms.';
+		return 'The objective of the game is to collect gold cups to move on to the next level.';
 	}
 
 	getHelp() {
-		return `<ul>
-              <li>Press [${this.controlKeys.left}] to move left</li>
-              <li>Press [${this.controlKeys.right}] to move right</li>
-              <li>Press [${this.controlKeys.up}] to move up</li>
-              <li>Press [${this.controlKeys.shoot}] to shoot</li>
+		return `<ul class="control-list">
+              <li class="control-list__item">
+			  		<img src="${this.controlKeys.img.left}" alt="${this.controlKeys.left}"> 
+					<div class="control-text">to move left </div>
+			  </li>
+              <li class="control-list__item">
+			  		<img src="${this.controlKeys.img.right}" alt="${this.controlKeys.right}"> 
+					  <div class="control-text">to move right</div>
+			  </li>
+              <li class="control-list__item">
+			  		<img src="${this.controlKeys.img.up}" alt="${this.controlKeys.up}"> 
+					  <div class="control-text">to jump </div>
+			  </li>
+              <li class="control-list__item">
+			  		<img src="${this.controlKeys.img.shoot}" alt="${this.controlKeys.shoot}"> 
+					  <div class="control-text">to shoot</div>
+			  </li>
             </ul>
     `;
 	}
@@ -61,7 +73,7 @@ class DaveGame {
 			if (playerScore > this.highScore) {
 				this.highScore = playerScore;
 			}
-			console.log(playerScore);
+			console.log(this.highScore);
 		}
 	}
 

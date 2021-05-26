@@ -68,7 +68,6 @@ class GroundGenerator {
 
 		createBtn.disabled = true;
 		createBtn.addEventListener('click', this.create.bind(this));
-		playBtn.addEventListener('click', this.play.bind(this));
 
 		const ctx = this.ctx;
 		this.mapElementArray = new Array(this.rows);

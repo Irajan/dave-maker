@@ -60,13 +60,16 @@ class Bullet {
 			return isOnTop && isOnBottom && isOnFront;
 		});
 		let animationId;
+		if (this.enemy) {
+			objectsCanCollide.push(this.enemy);
+		}
+
 		const animate = function () {
 			animationId = requestAnimationFrame(animate.bind(this));
 			ctx.clearRect(this.x, this.y, this.width, this.height);
 			this.update();
 			this.draw(ctx);
 
-			objectsCanCollide.push(this.enemy);
 			for (let i = 0; i < objectsCanCollide.length; i++) {
 				const currentObject = objectsCanCollide[i];
 

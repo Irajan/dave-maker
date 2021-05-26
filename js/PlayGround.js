@@ -94,20 +94,21 @@ class PlayGround {
 		this.show(this.ctx);
 		const tempPlayer = new Player(this);
 
-		console.log(this);
+		let animationId = requestAnimationFrame(animate.bind(this));
 
-		const interval = setInterval(() => {
+		function animate() {
+			animationId = requestAnimationFrame(animate.bind(this));
 			tempPlayer.moveRight();
 
 			if (tempPlayer.x > SCREEN_WIDTH) {
-				clearInterval(interval);
+				cancelAnimationFrame(animationId);
 				this.map = new Map();
 				this.map.index = level;
 				this.removeAllObjects();
 				this.show(this.ctx);
 				afterUpgrade();
 			}
-		}, SPEED);
+		}
 	}
 
 	remove(object) {

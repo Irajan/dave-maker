@@ -1,4 +1,17 @@
-canvas {
-	/* width: 100%;
-	height: 100%; */
+.help-heading {
+	font-size: 30px;
+	letter-spacing: 2px;
+}
+
+.control-list__item {
+	line-height: 20px;
+}
+.control-list__item img {
+	float: left;
+}
+
+.control-text {
+	float: left;
+	line-height: 50px;
+	margin: 0px 10px;
 }

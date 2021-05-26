@@ -35,8 +35,6 @@ class Player {
 
 	setEnemy(enemy) {
 		this.enemy = enemy;
-
-		console.log(enemy, 'is my enemy');
 	}
 
 	jump() {
@@ -94,6 +92,7 @@ class Player {
 
 					if (isDoor && this.hasKey) {
 						this.reachedDoor = true;
+						if (this.enemy) this.enemy.die();
 						break;
 					}
 					if (isFood) {
@@ -179,6 +178,7 @@ class Player {
 					const isDoor = currentObject.type === 'door';
 					if (isDoor && this.hasKey) {
 						this.reachedDoor = true;
+						if (this.enemy) this.enemy.die();
 						break;
 					}
 
@@ -267,6 +267,7 @@ class Player {
 					const isDoor = currentObject.type === 'door';
 					if (isDoor && this.hasKey) {
 						this.reachedDoor = true;
+						if (this.enemy) this.enemy.die();
 						break;
 					}
 
@@ -349,6 +350,7 @@ class Player {
 
 					if (isDoor && this.hasKey) {
 						this.reachedDoor = true;
+						if (this.enemy) this.enemy.die();
 						break;
 					}
 
@@ -379,13 +381,17 @@ class Player {
 	eat(food) {
 		this.gotFood = { status: true, value: food.score };
 		this.playground.remove(food);
-		if (food.name === 'trophy') {
+		if (food.name === TROPHY) {
 			this.hasKey = true;
+			return;
+		}
+		if (food.name === GUN) {
+			this.hasGun = true;
 		}
 	}
 
 	shoot() {
-		if (!this.hasGun && this.isFiring) {
+		if (!this.hasGun || this.isFiring) {
 			return;
 		}
 		this.isFiring = true;

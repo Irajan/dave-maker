@@ -8,7 +8,7 @@ class GameController {
 		this.playGround;
 		this.player = null;
 		this.monster = null;
-		this.maxLevel = 3;
+		this.maxLevel = 1;
 
 		this.sprites = sprites;
 		this.controlKeys = null;
@@ -62,11 +62,6 @@ class GameController {
 			window.removeEventListener('keydown', this.keyboardInputHandler);
 			cancelAnimationFrame(id);
 			this.ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-			if (this.currentLevel == this.maxLevel) {
-				this.gameOver();
-				return;
-			}
-
 			this.upgradeLevel();
 		}
 
@@ -95,7 +90,7 @@ class GameController {
 					this.player.isDead = false;
 
 					if (--this.playerLife < 0) {
-						this.afterGameOver();
+						this.gameOver();
 						return;
 					}
 
@@ -108,8 +103,11 @@ class GameController {
 	}
 
 	upgradeLevel() {
-		this.currentLevel++;
-		console.log(this.score);
+		if (++this.currentLevel == this.maxLevel) {
+			this.gameOver();
+			return;
+		}
+
 		this.playGround.upgrade(this.currentLevel, afterUpgrade.bind(this));
 
 		function afterUpgrade() {

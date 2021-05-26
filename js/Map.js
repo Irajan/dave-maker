@@ -16,7 +16,7 @@ class Map {
 				'Rg   g   g   g   gR',
 				'RR   R   R   R   RR',
 				'Rg     g          R',
-				'R   RRRRm  RRRRR  R',
+				'R   RRRRn  RRRRR  R',
 				'R0         R=     R',
 				'RRRRRRRRRRRRRRRRRRR',
 			],
@@ -119,7 +119,8 @@ class Map {
 					id: this.staticObjects.length + this.dynamicObjects.length,
 					x: col * GRID_WIDTH,
 					y: row * GRID_HEIGHT,
-					type: 'gun',
+					type: 'food',
+					name: GUN,
 				});
 				return GUN;
 			case 't':
