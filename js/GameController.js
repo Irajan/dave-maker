@@ -16,7 +16,7 @@ class GameController {
 	}
 
 	init(playGround, controlKeys) {
-		this.playGround = playGround ?? new PlayGround(this.sprites);
+		this.playGround = playGround || new PlayGround(this.sprites);
 		this.playGround.show(this.ctx);
 
 		this.controlKeys = controlKeys;

@@ -63,38 +63,6 @@ class Map {
 					type: 'tile',
 				});
 				return SAND;
-			case 'u':
-				this.staticObjects.push({
-					id: this.staticObjects.length + this.dynamicObjects.length,
-					x: col * GRID_WIDTH,
-					y: row * GRID_HEIGHT,
-					type: 'ulTriangle',
-				});
-				return UP_LEFT_SAND;
-			case 'U':
-				this.staticObjects.push({
-					id: this.staticObjects.length + this.dynamicObjects.length,
-					x: col * GRID_WIDTH,
-					y: row * GRID_HEIGHT,
-					type: 'urTriangle',
-				});
-				return UP_RIGHT_SAND;
-			case 'd':
-				this.staticObjects.push({
-					id: this.staticObjects.length + this.dynamicObjects.length,
-					x: col * GRID_WIDTH,
-					y: row * GRID_HEIGHT,
-					type: 'dlTriangle',
-				});
-				return DOWN_LEFT_SAND;
-			case 'D':
-				this.staticObjects.push({
-					id: this.staticObjects.length + this.dynamicObjects.length,
-					x: col * GRID_WIDTH,
-					y: row * GRID_HEIGHT,
-					type: 'drTriangle',
-				});
-				return DOWN_RIGHT_SAND;
 			case 'c':
 				this.staticObjects.push({
 					id: this.staticObjects.length + this.dynamicObjects.length,

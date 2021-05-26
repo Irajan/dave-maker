@@ -1,6 +1,6 @@
 class PlayGround {
-	constructor(sprites, map) {
-		this.map = map || new Map();
+	constructor(sprites, mapElements) {
+		this.map = new Map(mapElements);
 		this.map.index = 0;
 		this.sprites = sprites;
 		this.playerPosition = null;

@@ -43,14 +43,6 @@ class DaveGame {
 		const canvas = document.createElement('canvas');
 		this.container.innerHTML = '';
 
-		canvas.addEventListener('click', function (e) {
-			const boundRect = canvas.getBoundingClientRect();
-			const x = e.clientX - boundRect.left;
-			const y = e.clientY - boundRect.top;
-
-			console.log(x, y);
-		});
-
 		canvas.width = GRID_WIDTH * 19;
 		canvas.height = GRID_HEIGHT * 10;
 		container.appendChild(canvas);
@@ -74,21 +66,8 @@ class DaveGame {
 	}
 
 	createPlayground() {
-		const canvas = document.createElement('canvas');
-		this.container.innerHTML = '';
-
-		canvas.addEventListener('click', function (e) {
-			const boundRect = canvas.getBoundingClientRect();
-			const x = e.clientX - boundRect.left;
-			const y = e.clientY - boundRect.top;
-
-			console.log(x, y);
-		});
-
-		canvas.width = GRID_WIDTH * 19;
-		canvas.height = GRID_HEIGHT * 10;
-		container.appendChild(canvas);
-
-		const generator = new GroundGenerator(this.spriteMap, canvas);
+		const generator = new GroundGenerator(this.spriteMap, this.container);
+		generator.init();
+		generator.onFinish = this.play.bind(this);
 	}
 }
