@@ -75,12 +75,6 @@ class SpriteMap {
 					{ x: 256, y: 256 },
 				],
 			},
-			[JETPACK]: {
-				code: 'j',
-				width: 60,
-				height: 64,
-				location: [{ x: 515, y: 64 }],
-			},
 			[ENTRY_PIPE]: {
 				code: '0',
 				width: 64,
@@ -119,6 +113,7 @@ class SpriteMap {
 				],
 			},
 			[MONSTER]: {
+				code: 'm',
 				width: 70,
 				height: 64,
 				alive: [{ x: 142, y: 640 }],
@@ -126,6 +121,7 @@ class SpriteMap {
 					{ x: -1, y: 640 },
 					{ x: 64, y: 640 },
 				],
+				location: [{ x: 142, y: 640 }],
 			},
 		};
 	}

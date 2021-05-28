@@ -1,28 +1,32 @@
 class GameController {
-	constructor(canvas, sprites, callback) {
+	constructor(gameUi, sprites) {
 		this.score = 0;
-		this.canvas = canvas;
-		this.ctx = canvas.getContext('2d');
-		this.afterGameOver = callback;
+		this.gameUi = gameUi;
 		this.currentLevel = 0;
 		this.playGround;
 		this.player = null;
 		this.monster = null;
-		this.maxLevel = 1;
+		this.maxLevel = 3;
 
 		this.sprites = sprites;
 		this.controlKeys = null;
 		this.playerLife = 3;
+
+		//Generate DOM to display Score life and level
+		gameUi.hideContainer();
+		gameUi.showWrapper();
+		gameUi.setScore(this.score);
+		gameUi.setLevel(this.currentLevel);
+		gameUi.setLife(this.playerLife);
 	}
 
 	init(playGround, controlKeys) {
-		this.playGround = playGround || new PlayGround(this.sprites);
-		this.playGround.show(this.ctx);
-
+		if (playGround) this.maxLevel = 1;
+		this.playGround = playGround || new PlayGround(this.sprites, this.gameUi);
+		this.playGround.show();
 		this.controlKeys = controlKeys;
 
 		this.player = new Player(this.playGround);
-
 		if (this.playGround.monsterPosition != null) {
 			this.monster = new Monster(this.playGround);
 
@@ -31,7 +35,6 @@ class GameController {
 
 			this.monster.init();
 		}
-
 		window.addEventListener('keydown', this.keyboardInputHandler);
 	}
 
@@ -61,44 +64,28 @@ class GameController {
 		if (playerStatus.reachedDoor) {
 			window.removeEventListener('keydown', this.keyboardInputHandler);
 			cancelAnimationFrame(id);
-			this.ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 			this.upgradeLevel();
 		}
 
 		if (playerStatus.eatenFood.status) {
 			this.score += playerStatus.eatenFood.value;
 			this.player.gotFood = false;
+			this.gameUi.setScore(this.score);
 		}
 
 		if (playerStatus.died) {
-			window.removeEventListener('keydown', this.keyboardInputHandler);
 			cancelAnimationFrame(id);
-			let count = 1;
-			const interval = setInterval(() => {
-				this.player.draw(this.ctx, count);
-				count--;
 
-				if (count < 0) {
-					clearInterval(interval);
-					this.ctx.clearRect(
-						this.player.x,
-						this.player.y,
-						GRID_WIDTH,
-						GRID_HEIGHT
-					);
-					this.player.resetPosition();
-					this.player.isDead = false;
+			if (--this.playerLife < 0) {
+				this.gameOver();
+				return;
+			}
 
-					if (--this.playerLife < 0) {
-						this.gameOver();
-						return;
-					}
-
-					this.player.draw(this.ctx);
-					window.addEventListener('keydown', this.keyboardInputHandler);
-					this.start();
-				}
-			}, SPEED * 100);
+			this.gameUi.setLife(this.playerLife);
+			this.player.resetPosition();
+			this.player.draw();
+			this.player.makeAlive();
+			this.start();
 		}
 	}
 
@@ -107,13 +94,24 @@ class GameController {
 			this.gameOver();
 			return;
 		}
+		this.gameUi.setLevel('Upgrading . . . to ' + this.currentLevel);
 
 		this.playGround.upgrade(this.currentLevel, afterUpgrade.bind(this));
 
 		function afterUpgrade() {
+			this.gameUi.setLevel(this.currentLevel);
 			this.player = new Player(this.playGround);
 			window.addEventListener('keydown', this.keyboardInputHandler);
 			this.start();
+
+			if (this.playGround.monsterPosition != null) {
+				this.monster = new Monster(this.playGround);
+
+				this.monster.setEnemy(this.player);
+				this.player.setEnemy(this.monster);
+
+				this.monster.init();
+			}
 		}
 	}
 
@@ -122,7 +120,8 @@ class GameController {
 	}
 
 	gameOver() {
-		alert('Game Over');
+		this.playGround.removeAllObjects();
+		this.monster?.die();
 		this.afterGameOver();
 	}
 }

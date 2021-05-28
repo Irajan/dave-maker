@@ -43,6 +43,24 @@ body {
 	color: #ddd;
 }
 
+.alert-box {
+	text-align: center;
+	position: absolute;
+	top: 20%;
+	left: 50%;
+	width: 50%;
+	transform: scale(0);
+	background-color: rebeccapurple;
+	padding: 40px 20px;
+	cursor: pointer;
+	font-size: 1.2em;
+	transition: 0.5s linear;
+	overflow: hidden;
+}
+.alert-box.show {
+	transform: scale(1) translate(-50%, -20%);
+}
+
 .btn {
 	border-radius: 5px;
 	padding: 0px 8px;
@@ -55,10 +73,17 @@ body {
 .btn:hover {
 	border: 8px solid #fafafa;
 	margin: 2px;
-	/* border-style: solid; */
 }
 
 .btns {
 	width: fit-content;
 	margin: 40px auto;
+}
+
+.container {
+	overflow: hidden;
+}
+
+canvas {
+	transition: linear 2s;
 }

@@ -5,7 +5,6 @@ const controls = $('#game-controls');
 const gameScreen = $('#screen');
 const playBtn = $('#play-btn');
 const createBtn = $('#create-btn');
-const savedBtn = $('#saved-btn');
 
 //const game1 = new DaveGame(container);
 const game = new DaveGame(container);
@@ -19,10 +18,6 @@ playBtn.addEventListener('click', function (e) {
 
 createBtn.addEventListener('click', function () {
 	game.createPlayground();
-});
-
-savedBtn.addEventListener('click', function () {
-	game.showSaved();
 });
 
 game.onReturnBack = function () {

@@ -16,21 +16,33 @@ class Map {
 				'Rg   g   g   g   gR',
 				'RR   R   R   R   RR',
 				'Rg     g          R',
-				'R   RRRRn  RRRRR  R',
+				'R   RRRR   RRRRR  R',
 				'R0         R=     R',
 				'RRRRRRRRRRRRRRRRRRR',
 			],
 			[
-				'RRRRRRRRRRRRRRRRRRRR',
-				'RG     g            ',
-				'R              g    ',
-				'Rp  p        p      ',
-				'R       ppp   R  =   ',
-				'R  pp    R   tR  ppp',
-				'R        R p  R     ',
-				'R   ppp GR    R     ',
-				'R0    f  Rg  pR     ',
-				'RRRRfffffRffffR     ',
+				'RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR',
+				'RG     g                        RRRR                   =R',
+				'R              g          RRRRR RRRR 	                  ',
+				'Rp  p                    RR     RRRR       RRRRRRRRRRRRRS',
+				'R       ppp             R   RRRRRRRR      R             S',
+				'R  pp    R   tR  pppppp R  RR    R      R               S',
+				'R        R   RR         R  R           R                S',
+				'R   ppp GR    R         R RRR         R                 S',
+				'R0            R  		 R	         RRR                 S',
+				'RRRRRffffffffffffffRRRRRRRRRRRRRRRRRRRRRRRRRRRRRfRRRRRRRR',
+			],
+			[
+				'                                                        ',
+				'                                                        ',
+				'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+				'                                                 f     S',
+				'                m                               f      S',
+				'                                               f       S',
+				'0     f   n   f    f         t     f     f    ff      =S',
+				'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+				'                                                        ',
+				'                                                        ',
 			],
 		];
 	}
@@ -120,6 +132,7 @@ class Map {
 					x: col * GRID_WIDTH,
 					y: row * GRID_HEIGHT,
 					type: 'food',
+					score: 20,
 					name: GUN,
 				});
 				return GUN;
@@ -133,14 +146,6 @@ class Map {
 					score: 200,
 				});
 				return TROPHY;
-			case 'j':
-				this.staticObjects.push({
-					id: this.staticObjects.length + this.dynamicObjects.length,
-					x: col * GRID_WIDTH,
-					y: row * GRID_HEIGHT,
-					type: 'jetpack',
-				});
-				return JETPACK;
 			case 'f':
 				this.dynamicObjects.push({
 					id: this.staticObjects.length + this.dynamicObjects.length,

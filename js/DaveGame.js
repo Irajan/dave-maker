@@ -5,11 +5,12 @@ class DaveGame {
 		//If no control keys are available than return
 		if (DaveGame.possibleControlKeys.length === 0) return;
 
-		this.container = container;
+		this.gameUi = new GameUI(container);
 		this.highScore = 0;
 		this.controlKeys = DaveGame.possibleControlKeys.shift();
 		this.assets = {};
 		this.spriteMap = null;
+		this.groundGenerator;
 
 		(async () => {
 			this.assets.sprites = await loadSprite();
@@ -52,20 +53,10 @@ class DaveGame {
 	}
 
 	play(playGround) {
-		const canvas = document.createElement('canvas');
-		this.container.innerHTML = '';
-
-		canvas.width = GRID_WIDTH * 19;
-		canvas.height = GRID_HEIGHT * 10;
-		container.appendChild(canvas);
-
-		const gameController = new GameController(
-			canvas,
-			this.spriteMap,
-			afterGameOver.bind(this)
-		);
+		const gameController = new GameController(this.gameUi, this.spriteMap);
 		gameController.init(playGround, this.controlKeys);
 		gameController.start();
+		gameController.afterGameOver = afterGameOver.bind(this);
 
 		function afterGameOver() {
 			const playerScore = gameController.getScore();
@@ -73,13 +64,23 @@ class DaveGame {
 			if (playerScore > this.highScore) {
 				this.highScore = playerScore;
 			}
-			console.log(this.highScore);
+
+			this.gameUi.showAlert(
+				`Game Over
+				 <p>You managed to score ${playerScore} <p>
+				<p>High Score : ${this.highScore}</p>
+				 `
+			);
+
+			this.gameUi.showMenu();
 		}
 	}
 
 	createPlayground() {
-		const generator = new GroundGenerator(this.spriteMap, this.container);
-		generator.init();
-		generator.onFinish = this.play.bind(this);
+		if (this.groundGenerator == null) {
+			this.groundGenerator = new GroundGenerator(this.spriteMap, this.gameUi);
+		}
+		this.groundGenerator.init();
+		this.groundGenerator.onFinish = this.play.bind(this);
 	}
 }

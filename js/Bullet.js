@@ -87,7 +87,7 @@ class Bullet {
 					height: this.height,
 				};
 
-				if (checkCollision(tempBullet, tempObject)) {
+				if (checkCollision(tempBullet, tempObject).status) {
 					if (currentObject.type == 'obstacle') break;
 					cancelAnimationFrame(animationId);
 					ctx.clearRect(this.x, this.y, this.width, this.height);

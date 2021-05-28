@@ -70,30 +70,32 @@ function getQuardant(x, y, sw, sh) {
 
 /**
  *
- * @param {object} point point in 2d coordinate system
- * @param {object} screen window for the grid division
- * @param {object} division number of division used to make grid
- *
- * @returns {object} row and column of the grid
+ * @param {Array} array of Object or numbers
+ * @returns
  */
-
-function getGrid(point, screen, division) {
-	const xThickness = screen.width / division.x;
-	const yThickness = screen.height / division.y;
-
-	const col = Math.floor(point.x / xThickness);
-	const row = Math.floor(point.y / yThickness);
-
-	return { row, col };
+function getUnique(array) {
+	if (array instanceof Array) return [...new Set(array.map((x) => x))];
 }
 
 function checkCollision(obj1, obj2) {
-	const horizantalCheck =
-		obj1.x < obj2.x + obj2.width && obj1.x + obj1.width > obj2.x;
+	const leftCollision = obj1.x < obj2.x + obj2.width;
+	const rightCollision = obj1.x + obj1.width > obj2.x;
+	const topCollision = obj1.y < obj2.y + obj2.height;
+	const bottomCollision = obj1.y + obj1.height > obj2.y;
 
-	const verticalCheck =
-		obj1.y < obj2.y + obj2.height && obj1.y + obj1.height > obj2.y;
-	return horizantalCheck && verticalCheck;
+	const horizantalCheck = leftCollision && rightCollision;
+	const verticalCheck = topCollision && bottomCollision;
+
+	let status = false;
+	if (horizantalCheck && verticalCheck) {
+		status = true;
+		if (topCollision) return { status, direction: 't' };
+		if (rightCollision) return { status, direction: 'r' };
+		if (bottomCollision) return { status, direction: 'b' };
+		if (leftCollision) return { status, direction: 'l' };
+	}
+
+	return { status, direction: 'none' };
 }
 
 function getRandomColor(options) {

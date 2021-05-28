@@ -3,6 +3,8 @@ class Player {
 		this.playground = playground;
 		this.x = playground.playerPosition.x;
 		this.y = playground.playerPosition.y;
+		this.targetX;
+		this.targetY;
 		this.enemy = null;
 
 		this.sprite = playground.sprites;
@@ -14,6 +16,7 @@ class Player {
 		this.isMoving = false;
 		this.isJumping = false;
 		this.isFiring = false;
+		this.isDying = false;
 
 		this.fallingId = null;
 
@@ -38,172 +41,90 @@ class Player {
 	}
 
 	jump() {
-		if (this.onAir || this.isJumping) return;
+		if (this.onAir || this.isJumping || this.isDying) return;
 
 		this.onAir = true;
 		this.isJumping = true;
 
-		let targetY = this.y - 2 * GRID_HEIGHT - 10;
+		this.targetY = this.y - 2 * GRID_HEIGHT - 10;
 
 		const interval = setInterval(() => {
-			const quardantIndex = getQuardant(
-				this.x,
-				this.y - GRID_HEIGHT,
-				SCREEN_WIDTH,
-				SCREEN_HEIGHT
-			);
+			this.update();
 
-			let objectsInQuardant = this.playground.objects[quardantIndex];
-
-			//	if (quardantIndex != this.quardantIndex) {
-			objectsInQuardant = [
-				...this.playground.objects[0],
-				...this.playground.objects[1],
-				...this.playground.objects[2],
-				...this.playground.objects[3],
-			];
-			//	}
-
-			for (let i = 0; i < objectsInQuardant.length; i++) {
-				const currentObject = objectsInQuardant[i];
-
-				if (currentObject.y + GRID_HEIGHT > this.y) {
-					continue;
-				}
-
-				const tempObject = {
-					x: currentObject.x,
-					y: currentObject.y,
-					width: GRID_WIDTH,
-					height: GRID_HEIGHT,
-				};
-
-				const tempPlayer = {
-					x: this.x,
-					y: this.y - STEP_PER_FRAME,
-					width: GRID_WIDTH,
-					height: GRID_HEIGHT,
-				};
-
-				if (checkCollision(tempPlayer, tempObject)) {
-					const isFood = currentObject.type === 'food';
-					const isObstacle = currentObject.type === 'obstacle';
-					const isDoor = currentObject.type === 'door';
-
-					if (isDoor && this.hasKey) {
-						this.reachedDoor = true;
-						if (this.enemy) this.enemy.die();
-						break;
-					}
-					if (isFood) {
-						this.eat(currentObject);
-						continue;
-					}
-
-					if (isObstacle) {
-						this.isDead = true;
-						this.leftOrRight = 'die';
-					}
-					targetY = this.y;
-				}
-			}
-
-			if (targetY >= this.y) {
+			if (this.targetY >= this.y) {
 				clearInterval(interval);
 				this.isJumping = false;
 				this.fallDown();
 			} else {
 				this.y -= STEP_PER_FRAME;
-				this.quardantIndex = quardantIndex;
+				this.quardantIndex = getQuardant(
+					this.x,
+					this.y,
+					SCREEN_WIDTH,
+					SCREEN_HEIGHT
+				);
 			}
 			if (!this.reachedDoor) this.draw(this.ctx, 3);
 		}, SPEED);
 	}
 
 	moveLeft() {
-		if (this.isMoving) return;
+		if (this.isMoving || this.isDying) {
+			return;
+		}
 		this.leftOrRight = 'left';
 
 		this.isMoving = true;
 		this.spriteIndex = (this.spriteIndex + 1) % 3;
 
-		let targetX = this.x - GRID_WIDTH / 2;
+		this.targetX = this.x - GRID_WIDTH / 2;
 
-		if (this.onAir) targetX -= GRID_WIDTH;
+		if (this.onAir) this.targetX -= GRID_WIDTH;
 
 		const interval = setInterval(() => {
-			const quardantIndex = getQuardant(
-				this.x - GRID_WIDTH,
-				this.y,
-				SCREEN_WIDTH,
-				SCREEN_HEIGHT
-			);
-
-			let objectsInQuardant = this.playground.objects[quardantIndex];
-
-			//	if (quardantIndex != this.quardantIndex) {
-			//		console.log('Quardant Changed');
-			objectsInQuardant = [
-				...this.playground.objects[0],
-				...this.playground.objects[1],
-				...this.playground.objects[2],
-				...this.playground.objects[3],
-			];
-			//	}
-			for (let i = 0; i < objectsInQuardant.length; i++) {
-				const currentObject = objectsInQuardant[i];
-
+			const possibleCollideObjects = this.getPossibleCollideObjects();
+			for (let i = 0; i < possibleCollideObjects.length; i++) {
+				const currentObject = possibleCollideObjects[i];
 				if (currentObject.x + GRID_WIDTH > this.x) {
 					continue;
 				}
-
 				const tempObject = {
 					x: currentObject.x,
 					y: currentObject.y,
 					width: GRID_WIDTH,
 					height: GRID_HEIGHT,
 				};
-
 				const tempPlayer = {
 					x: this.x - STEP_PER_FRAME,
 					y: this.y,
 					width: GRID_WIDTH,
 					height: GRID_HEIGHT,
 				};
-
-				if (checkCollision(tempPlayer, tempObject)) {
+				if (checkCollision(tempPlayer, tempObject).status) {
 					const isFood = currentObject.type === 'food';
 					const isObstacle = currentObject.type === 'ObstaisObstacle';
-
 					const isDoor = currentObject.type === 'door';
 					if (isDoor && this.hasKey) {
 						this.reachedDoor = true;
-						if (this.enemy) this.enemy.die();
+						this.enemy?.die();
 						break;
 					}
-
 					if (isFood) {
 						this.eat(currentObject);
 						continue;
 					}
-
 					if (isObstacle) {
-						this.isDead = true;
-						this.leftOrRight = 'die';
+						this.die();
 					}
-
-					targetX = this.x;
+					this.targetX = this.x;
 				}
 			}
-
-			if (targetX >= this.x) {
+			if (this.targetX >= this.x) {
 				clearInterval(interval);
 				this.isMoving = false;
-
 				if (!this.isJumping) this.fallDown();
 			} else {
 				this.x -= STEP_PER_FRAME;
-				this.quardantIndex = quardantIndex;
 			}
 			if (!this.reachedDoor)
 				this.draw(this.ctx, this.isJumping ? 3 : this.spriteIndex);
@@ -211,7 +132,9 @@ class Player {
 	}
 
 	moveRight() {
-		if (this.isMoving) return;
+		if (this.isMoving || this.isDying) {
+			return;
+		}
 		this.isMoving = true;
 		this.leftOrRight = 'right';
 
@@ -222,25 +145,10 @@ class Player {
 		this.spriteIndex = (this.spriteIndex + 1) % 3;
 
 		const interval = setInterval(() => {
-			const quardantIndex = getQuardant(
-				this.x + GRID_WIDTH,
-				this.y,
-				SCREEN_WIDTH,
-				SCREEN_HEIGHT
-			);
-			let objectsInQuardant = this.playground.objects[quardantIndex];
+			const possibleCollideObjects = this.getPossibleCollideObjects();
 
-			//		if (quardantIndex != this.quardantIndex) {
-			objectsInQuardant = [
-				...this.playground.objects[0],
-				...this.playground.objects[1],
-				...this.playground.objects[2],
-				...this.playground.objects[3],
-			];
-			//		}
-
-			for (let i = 0; i < objectsInQuardant.length; i++) {
-				const currentObject = objectsInQuardant[i];
+			for (let i = 0; i < possibleCollideObjects.length; i++) {
+				const currentObject = possibleCollideObjects[i];
 
 				if (currentObject.x + GRID_WIDTH < this.x + GRID_WIDTH) {
 					continue;
@@ -260,14 +168,14 @@ class Player {
 					height: GRID_HEIGHT,
 				};
 
-				if (checkCollision(tempPlayer, tempObject)) {
+				if (checkCollision(tempPlayer, tempObject).status) {
 					const isFood = currentObject.type === 'food';
 					const isObstacle = currentObject.type === 'obstacle';
 
 					const isDoor = currentObject.type === 'door';
 					if (isDoor && this.hasKey) {
 						this.reachedDoor = true;
-						if (this.enemy) this.enemy.die();
+						this.enemy?.die();
 						break;
 					}
 
@@ -276,8 +184,7 @@ class Player {
 						continue;
 					}
 					if (isObstacle) {
-						this.isDead = true;
-						this.leftOrRight = 'die';
+						this.die();
 					}
 
 					targetX = this.x;
@@ -291,7 +198,9 @@ class Player {
 				if (!this.isJumping) this.fallDown();
 			} else {
 				this.x += STEP_PER_FRAME;
-				this.quardantIndex = quardantIndex;
+				if (this.x % SCREEN_WIDTH == 0) {
+					this.playground.reachedCheckpoint(this.x, this.y);
+				}
 			}
 			if (!this.reachedDoor)
 				this.draw(this.ctx, this.isJumping ? 3 : this.spriteIndex);
@@ -301,30 +210,16 @@ class Player {
 	fallDown() {
 		clearInterval(this.fallingId);
 
+		if (this.isDying) return;
+
 		let targetY = SCREEN_HEIGHT;
 		this.onAir = true;
 
 		this.fallingId = setInterval(() => {
-			const quardantIndex = getQuardant(
-				this.x,
-				this.y + GRID_HEIGHT,
-				SCREEN_WIDTH,
-				SCREEN_HEIGHT
-			);
+			const possibleCollideObjects = this.getPossibleCollideObjects();
 
-			let objectsInQuardant = this.playground.objects[quardantIndex];
-
-			//	if (quardantIndex != this.quardantIndex) {
-			objectsInQuardant = [
-				...this.playground.objects[0],
-				...this.playground.objects[1],
-				...this.playground.objects[2],
-				...this.playground.objects[3],
-			];
-			//	}
-
-			for (let i = 0; i < objectsInQuardant.length; i++) {
-				const currentObject = objectsInQuardant[i];
+			for (let i = 0; i < possibleCollideObjects.length; i++) {
+				const currentObject = possibleCollideObjects[i];
 				if (currentObject.y < this.y + GRID_HEIGHT) {
 					continue;
 				}
@@ -343,14 +238,14 @@ class Player {
 					height: GRID_HEIGHT,
 				};
 
-				if (checkCollision(tempPlayer, tempObject)) {
+				if (checkCollision(tempPlayer, tempObject).status) {
 					const isFood = currentObject.type === 'food';
 					const isDoor = currentObject.type === 'door';
 					const isObstacle = currentObject.type === 'obstacle';
 
 					if (isDoor && this.hasKey) {
 						this.reachedDoor = true;
-						if (this.enemy) this.enemy.die();
+						this.enemy?.die();
 						break;
 					}
 
@@ -360,8 +255,7 @@ class Player {
 					}
 
 					if (isObstacle) {
-						this.isDead = true;
-						this.leftOrRight = 'die';
+						this.die();
 					}
 					targetY = this.y;
 				}
@@ -372,12 +266,63 @@ class Player {
 				clearInterval(this.fallingId);
 			} else {
 				this.y += STEP_PER_FRAME;
-				this.quardantIndex = quardantIndex;
 			}
 
 			if (!this.reachedDoor) this.draw(this.ctx, 0);
 		}, SPEED);
 	}
+
+	update() {
+		const possibleCollideObjects = this.getPossibleCollideObjects();
+
+		for (let i = 0; i < possibleCollideObjects.length; i++) {
+			const currentObject = possibleCollideObjects[i];
+
+			const tempObject = {
+				x: currentObject.x,
+				y: currentObject.y,
+				width: GRID_WIDTH,
+				height: GRID_HEIGHT,
+			};
+
+			const tempPlayer = {
+				x: this.x,
+				y: this.y - STEP_PER_FRAME,
+				width: GRID_WIDTH,
+				height: GRID_HEIGHT,
+			};
+
+			const { status, direction } = checkCollision(tempObject, tempPlayer);
+
+			if (status) {
+				const isFood = currentObject.type === 'food';
+				const isObstacle = currentObject.type === 'obstacle';
+				const isDoor = currentObject.type === 'door';
+
+				if (isDoor && this.hasKey) {
+					this.reachedDoor = true;
+					this.enemy?.die();
+					break;
+				}
+				if (isFood) {
+					this.eat(currentObject);
+					continue;
+				}
+
+				if (isObstacle) {
+					this.die();
+				}
+
+				if (direction === 't' || direction === 'b') {
+					this.targetY = this.y;
+				}
+				if (direction === 'l' || direction === 'r') {
+					this.targetX = this.x;
+				}
+			}
+		}
+	}
+
 	eat(food) {
 		this.gotFood = { status: true, value: food.score };
 		this.playground.remove(food);
@@ -404,12 +349,35 @@ class Player {
 	}
 
 	die() {
-		this.isDead = true;
 		this.leftOrRight = 'die';
+		this.isDying = true;
+		let spriteIndex = 1;
+		const interval = setInterval(() => {
+			this.draw(this.ctx, 1);
+			spriteIndex--;
+
+			if (spriteIndex < 0) {
+				clearInterval(interval);
+				this.isDead = true;
+				this.ctx.clearRect(this.x, this.y - 1, GRID_WIDTH, GRID_HEIGHT + 2);
+			}
+		}, SPEED * 100);
 	}
 
-	draw(ctx, spriteIndex = 0) {
+	makeAlive() {
+		this.isDead = false;
+		this.isDying = false;
+	}
+
+	draw(ctx = this.ctx, spriteIndex = 0) {
 		const leftOrRight = this.leftOrRight;
+		this.quardantIndex = getQuardant(
+			this.x,
+			this.y,
+			SCREEN_WIDTH,
+			SCREEN_HEIGHT
+		);
+
 		const quardants = this.playground.objects[this.quardantIndex];
 
 		quardants.forEach((el) => {
@@ -441,5 +409,61 @@ class Player {
 			hasKey: this.hasKey,
 			died: this.isDead,
 		};
+	}
+
+	getPossibleCollideObjects() {
+		const topLeft = {
+			x: this.x - GRID_WIDTH / 2,
+			y: this.y - GRID_HEIGHT / 2,
+		};
+		const topRight = {
+			x: this.x + GRID_WIDTH / 2,
+			y: this.y - GRID_HEIGHT / 2,
+		};
+		const bottomLeft = {
+			x: this.x - GRID_WIDTH / 2,
+			y: this.y + GRID_HEIGHT / 2,
+		};
+		const bottomRight = {
+			x: this.x + GRID_WIDTH / 2,
+			y: this.y + GRID_HEIGHT / 2,
+		};
+
+		const sw = SCREEN_WIDTH;
+		const sh = SCREEN_HEIGHT;
+
+		const quardantIndexis = new Array();
+		quardantIndexis[0] = getQuardant(topLeft.x, topLeft.y, sw, sh);
+		quardantIndexis[1] = getQuardant(topRight.x, topRight.y, sw, sh);
+		quardantIndexis[2] = getQuardant(bottomLeft.x, bottomLeft.y, sw, sh);
+		quardantIndexis[3] = getQuardant(bottomRight.x, bottomRight.y, sw, sh);
+
+		const differentQuardants = getUnique(quardantIndexis);
+		const objectsCanCollode = new Array();
+
+		differentQuardants.forEach((quardantIndex) => {
+			const objectsInQuardant = this.playground.objects[quardantIndex];
+			objectsInQuardant.forEach((object) => {
+				objectsCanCollode.push(object);
+			});
+		});
+
+		const objectsInsideBoundary = objectsCanCollode.filter((object) => {
+			const boundary = {
+				...topLeft,
+				width: GRID_WIDTH * 2,
+				height: GRID_HEIGHT * 2,
+			};
+			const tempObj = {
+				x: object.x,
+				y: object.y,
+				width: GRID_WIDTH,
+				height: GRID_HEIGHT,
+			};
+
+			return checkCollision(boundary, tempObj).status;
+		});
+
+		return objectsInsideBoundary;
 	}
 }

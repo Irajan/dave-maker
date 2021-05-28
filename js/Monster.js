@@ -13,12 +13,6 @@ class Monster {
 		this.sprite = playground.sprites;
 		this.ctx = playground.ctx;
 		this.deadOrAlive = 'alive';
-		this.possibleCollides = [
-			...playground.objects[0],
-			...playground.objects[1],
-			...playground.objects[2],
-			...playground.objects[3],
-		];
 
 		this.draw(this.ctx);
 	}
@@ -66,7 +60,7 @@ class Monster {
 		bullet.fire(this.playground);
 		setTimeout(() => {
 			this.isFiring = false;
-		}, SPEED * 500);
+		}, SPEED * 1000);
 	}
 
 	die() {
