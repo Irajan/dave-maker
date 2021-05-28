@@ -371,19 +371,6 @@ class Player {
 
 	draw(ctx = this.ctx, spriteIndex = 0) {
 		const leftOrRight = this.leftOrRight;
-		this.quardantIndex = getQuardant(
-			this.x,
-			this.y,
-			SCREEN_WIDTH,
-			SCREEN_HEIGHT
-		);
-
-		const quardants = this.playground.objects[this.quardantIndex];
-
-		quardants.forEach((el) => {
-			ctx.fillStyle = getRandomColor();
-			ctx.fillText('' + el.id, el.x + 25, el.y + 25);
-		});
 
 		const image = this.sprite.image;
 		const spriteLocation = this.sprite.sceneElements[PLAYER][leftOrRight];

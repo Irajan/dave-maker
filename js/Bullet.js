@@ -31,6 +31,7 @@ class Bullet {
 	}
 
 	draw(ctx) {
+		ctx.fillStyle = '#fff';
 		ctx.beginPath();
 		ctx.rect(this.x, this.y, this.width, this.height);
 		ctx.closePath();
