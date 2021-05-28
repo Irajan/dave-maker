@@ -1,3 +1,11 @@
+function loadSprite() {
+	return new Promise(function (resolve, reject) {
+		const img = new Image();
+		img.src = './assets/sprite.png';
+		img.onload = resolve(img);
+	});
+}
+
 class DaveGame {
 	static possibleControlKeys = new Array().concat(CONTROLLER_KEYS);
 
@@ -16,14 +24,6 @@ class DaveGame {
 			this.assets.sprites = await loadSprite();
 			this.spriteMap = new SpriteMap(this.assets.sprites);
 		})();
-
-		function loadSprite() {
-			return new Promise(function (resolve, reject) {
-				const img = new Image();
-				img.src = './assets/sprite.png';
-				img.onload = resolve(img);
-			});
-		}
 	}
 
 	getInformation() {

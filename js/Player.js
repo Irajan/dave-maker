@@ -378,8 +378,8 @@ class Player {
 		ctx.clearRect(this.x, this.y - 1, GRID_WIDTH, GRID_HEIGHT + 2);
 		const dx = this.x;
 		const dy = this.y;
-		const sx = spriteLocation[spriteIndex].x;
-		const sy = spriteLocation[spriteIndex].y;
+		const sx = spriteLocation[spriteIndex]?.x;
+		const sy = spriteLocation[spriteIndex]?.y;
 		ctx.drawImage(image, sx, sy, 64, 64, dx, dy, GRID_WIDTH, GRID_HEIGHT);
 	}
 

@@ -47,8 +47,6 @@ class GroundGenerator {
 		this.mainCanvas.width = GRID_WIDTH * this.cols;
 		this.mainCanvas.height = GRID_HEIGHT * this.rows;
 
-		this.clear();
-
 		window.addEventListener('mousedown', () => {
 			this.isDrawing = true;
 		});
@@ -59,9 +57,6 @@ class GroundGenerator {
 
 		this.createBtn.addEventListener('click', this.create.bind(this));
 		this.clearBtn.addEventListener('click', this.clear.bind(this));
-
-		this.mainCanvas.addEventListener('mousemove', this.drawOnCanvas);
-
 		this.itemCanvas.addEventListener('click', (e) => {
 			const ctx = this.itemCtx;
 			const boundRect = e.target.getBoundingClientRect();
@@ -91,10 +86,10 @@ class GroundGenerator {
 
 			if (!imageClip.location) continue;
 
-			const sx = imageClip.location[0].x;
-			const sy = imageClip.location[0].y;
-			const sw = imageClip.width;
-			const sh = imageClip.height;
+			const sx = imageClip?.location[0].x;
+			const sy = imageClip?.location[0].y;
+			const sw = imageClip?.width;
+			const sh = imageClip?.height;
 			const dx = drawIndex * GRID_WIDTH + 2;
 			const dy = 0;
 			const dw = GRID_WIDTH - 2;
@@ -126,6 +121,8 @@ class GroundGenerator {
 	}
 
 	init() {
+		this.clear();
+		this.mainCanvas.addEventListener('mousemove', this.drawOnCanvas);
 		this.buttonHolder.style.display = 'block';
 		this.gameUi.showItemCanvas();
 		this.gameUi.hideMenu();
@@ -148,17 +145,17 @@ class GroundGenerator {
 		const gridX = Math.floor(x / GRID_WIDTH);
 		const gridY = Math.floor(y / GRID_HEIGHT);
 
-		const sx = imageItem.location[0].x;
-		const sy = imageItem.location[0].y;
-		const sw = imageItem.width;
-		const sh = imageItem.height;
+		const sx = imageItem?.location[0].x;
+		const sy = imageItem?.location[0].y;
+		const sw = imageItem?.width;
+		const sh = imageItem?.height;
 		const dx = gridX * GRID_WIDTH;
 		const dy = gridY * GRID_HEIGHT;
 		const dw = GRID_WIDTH;
 		const dh = GRID_HEIGHT;
 
 		this.mainCtx.drawImage(this.sprite.image, sx, sy, sw, sh, dx, dy, dw, dh);
-		this.mapElementArray[gridY][gridX] = imageItem.code;
+		this.mapElementArray[gridY][gridX] = imageItem?.code;
 	};
 
 	create() {
@@ -186,8 +183,6 @@ class GroundGenerator {
 	}
 
 	performValidation() {
-		console.log(this.mapElementArray);
-
 		const array = this.mapElementArray;
 		let doorCount = 0,
 			trophyCount = 0,

@@ -70,11 +70,30 @@ function getQuardant(x, y, sw, sh) {
 
 /**
  *
- * @param {Array} array of Object or numbers
+ * @param {Array} array of or numbers
  * @returns
  */
 function getUnique(array) {
-	if (array instanceof Array) return [...new Set(array.map((x) => x))];
+	return [...new Set(array.map((x) => x))];
+}
+
+/**
+ *
+ * @param {Array} objectArray of Object with redundant data
+ * @returns objectArray with unique id only
+ */
+function getUniqueObjects(objectArray) {
+	const uniqueObjects = [];
+	const uniqueIndexes = []; //Array to track the selected ids;
+
+	for (let obj of objectArray) {
+		if (uniqueIndexes.includes(obj.id)) continue;
+
+		uniqueIndexes.push(obj.id);
+		uniqueObjects.push(obj);
+	}
+
+	return uniqueObjects;
 }
 
 function checkCollision(obj1, obj2) {

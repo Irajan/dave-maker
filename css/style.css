@@ -80,6 +80,15 @@ body {
 	margin: 40px auto;
 }
 
+.wrapper {
+	background-color: blue;
+	padding: 20px;
+}
+
+.wrapper .btn {
+	margin: 0px 30px;
+}
+
 .container {
 	overflow: hidden;
 }

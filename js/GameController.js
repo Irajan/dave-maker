@@ -1,3 +1,19 @@
+function afterUpgrade() {
+	this.gameUi.setLevel(this.currentLevel);
+	this.player = new Player(this.playGround);
+	window.addEventListener('keydown', this.keyboardInputHandler);
+	this.start();
+
+	if (this.playGround.monsterPosition != null) {
+		this.monster = new Monster(this.playGround);
+
+		this.monster.setEnemy(this.player);
+		this.player.setEnemy(this.monster);
+
+		this.monster.init();
+	}
+}
+
 class GameController {
 	constructor(gameUi, sprites) {
 		this.score = 0;
@@ -11,16 +27,16 @@ class GameController {
 		this.sprites = sprites;
 		this.controlKeys = null;
 		this.playerLife = 3;
-
-		//Generate DOM to display Score life and level
-		gameUi.hideContainer();
-		gameUi.showWrapper();
-		gameUi.setScore(this.score);
-		gameUi.setLevel(this.currentLevel);
-		gameUi.setLife(this.playerLife);
 	}
 
 	init(playGround, controlKeys) {
+		//Generate DOM to display Score life and level
+		this.gameUi.hideContainer();
+		this.gameUi.showWrapper();
+		this.gameUi.setScore(this.score);
+		this.gameUi.setLevel(this.currentLevel);
+		this.gameUi.setLife(this.playerLife);
+
 		if (playGround) this.maxLevel = 1;
 		this.playGround = playGround || new PlayGround(this.sprites, this.gameUi);
 		this.playGround.show();
@@ -97,22 +113,6 @@ class GameController {
 		this.gameUi.setLevel('Upgrading . . . to ' + this.currentLevel);
 
 		this.playGround.upgrade(this.currentLevel, afterUpgrade.bind(this));
-
-		function afterUpgrade() {
-			this.gameUi.setLevel(this.currentLevel);
-			this.player = new Player(this.playGround);
-			window.addEventListener('keydown', this.keyboardInputHandler);
-			this.start();
-
-			if (this.playGround.monsterPosition != null) {
-				this.monster = new Monster(this.playGround);
-
-				this.monster.setEnemy(this.player);
-				this.player.setEnemy(this.monster);
-
-				this.monster.init();
-			}
-		}
 	}
 
 	getScore() {

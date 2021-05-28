@@ -40,6 +40,7 @@ class Bullet {
 
 	fire(playground) {
 		const ctx = playground.ctx;
+		let animationId;
 
 		const allObjects = [
 			...playground.objects[0],
@@ -60,7 +61,7 @@ class Bullet {
 
 			return isOnTop && isOnBottom && isOnFront;
 		});
-		let animationId;
+
 		if (this.enemy) {
 			objectsCanCollide.push(this.enemy);
 		}

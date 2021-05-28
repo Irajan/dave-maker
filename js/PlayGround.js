@@ -8,7 +8,6 @@ class PlayGround {
 
 		gameUi.showGameScreen();
 		this.gameScreen = gameUi.getGameScreen();
-		this.frame = 1;
 
 		this.ctx = this.gameScreen.getContext('2d');
 		this.objects = [[], [], [], []];
@@ -107,10 +106,10 @@ class PlayGround {
 			this.objects[bottomRightQuardant].push(currentObject);
 		}
 
-		this.objects[0] = getUnique(this.objects[0]);
-		this.objects[1] = getUnique(this.objects[1]);
-		this.objects[2] = getUnique(this.objects[2]);
-		this.objects[3] = getUnique(this.objects[3]);
+		this.objects[0] = getUniqueObjects(this.objects[0]);
+		this.objects[1] = getUniqueObjects(this.objects[1]);
+		this.objects[2] = getUniqueObjects(this.objects[2]);
+		this.objects[3] = getUniqueObjects(this.objects[3]);
 
 		function drawOnInterval(obj) {
 			const sprite = this.sprites;
@@ -143,7 +142,6 @@ class PlayGround {
 	upgrade(level, afterUpgrade) {
 		this.gameScreen.style.transform = 'translateX(0px)';
 		this.gameScreen.style.transition = '0s';
-		this.frame = 1;
 		const upgraeScreenElements = [
 			[
 				'                   ',
@@ -170,7 +168,7 @@ class PlayGround {
 			animationId = requestAnimationFrame(animate.bind(this));
 			tempPlayer.moveRight();
 
-			if (tempPlayer.x > SCREEN_WIDTH - 200) {
+			if (tempPlayer.x > SCREEN_WIDTH - 1) {
 				this.gameScreen.style.transition = '2s';
 				cancelAnimationFrame(animationId);
 				this.map = new Map();
